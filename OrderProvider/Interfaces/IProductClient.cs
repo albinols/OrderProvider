@@ -9,6 +9,6 @@ namespace OrderProvider.Interfaces
 {
     public interface IProductClient
     {
-        Task<Product?> GetProductById(string productId);
+        Task<ProductRequest?> GetProductById(string productId);
     }
 }

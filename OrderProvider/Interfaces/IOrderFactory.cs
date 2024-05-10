@@ -11,6 +11,6 @@ namespace OrderProvider.Interfaces
     public interface IOrderFactory
     {
         OrderEntity CreateOrder(Guid orderId, CreateOrderRequest createOrderRequest, List<OrderItemEntity> orderItems);
-        List<OrderItemEntity> CreateOrderItems(Guid orderId, List<Product> product, Dictionary<string, int> quantities);
+        List<OrderItemEntity> CreateOrderItems(Guid orderId, List<ProductRequest> productRequest, Dictionary<string, int> quantities);
     }
 }

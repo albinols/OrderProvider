@@ -46,7 +46,7 @@ namespace OrderProvider.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError($"CreateOrder.UnpackCreateOrderRequest() :: {ex.Message}");
+                _logger.LogError($"CreateOrderService.UnpackCreateOrderRequest() :: {ex.Message}");
             }
 
             return null;    
@@ -58,7 +58,7 @@ namespace OrderProvider.Services
             {
                 var orderId = Guid.NewGuid();
 
-                var products = new List<Product>();
+                var products = new List<ProductRequest>();
 
                 var quantities = new Dictionary<string, int>();
 
@@ -69,6 +69,11 @@ namespace OrderProvider.Services
                     {
                         products.Add(product);
                         quantities[product.ProductId] = productOrder.Quantity;
+                    }
+                    else
+                    {
+                        _logger.LogWarning($"CreateOrderService.CreateOrder() Product not found: {productOrder.ProductId}");
+                        return false;
                     }
                 }
 

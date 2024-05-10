@@ -25,7 +25,7 @@ namespace OrderProvider.Services
         }
 
 
-        public async Task<Product?> GetProductById(string productId)
+        public async Task<ProductRequest?> GetProductById(string productId)
         {
             string url = $"{ProductBaseUrl}{productId}?code={AccessCode}";
 
@@ -37,12 +37,20 @@ namespace OrderProvider.Services
                     var result = await response.Content.ReadAsStringAsync();
                     if (result != null)
                     {
-                        var product = JsonConvert.DeserializeObject<Product>(result);
-                        if (product != null)
+                        var product = JsonConvert.DeserializeObject<ProductRequest>(result);
+                        if (product != null && product.IsValid())
                         {
                             return product;
-                        } 
+                        }
+                        else
+                        {
+                            _logger.LogWarning($"ProductClient.GetProductByIdAsync() :: The product with ID {productId} is missing required attributes.");
+                        }
                     }
+                }
+                else
+                {
+                    _logger.LogWarning($"ProductClient.GetProductByIdAsync() :: Failed to fetch product: {response.StatusCode} - {response.ReasonPhrase}");
                 }
             }
             catch (Exception ex)

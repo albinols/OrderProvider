@@ -30,16 +30,16 @@ namespace OrderProvider.Factories
             };
         }
 
-        public List<OrderItemEntity> CreateOrderItems(Guid orderId, List<Product> product, Dictionary<string, int> quantities)
+        public List<OrderItemEntity> CreateOrderItems(Guid orderId, List<ProductRequest> productRequest, Dictionary<string, int> quantities)
         {
-            return product.Select(product => new OrderItemEntity
+            return productRequest.Select(productRequest => new OrderItemEntity
             {
                 OrderItemId = Guid.NewGuid(),
                 OrderId = orderId,
-                ProductId = product.ProductId,
-                ProductName = product.ProductName,
-                UnitPrice = product.UnitPrice,
-                Quantity = quantities[product.ProductId]
+                ProductId = productRequest.ProductId,
+                ProductName = productRequest.ProductName,
+                UnitPrice = productRequest.UnitPrice,
+                Quantity = quantities[productRequest.ProductId]
             }).ToList();
         }
     }
