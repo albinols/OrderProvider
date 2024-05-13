@@ -12,5 +12,7 @@ namespace OrderProvider.Interfaces
     {
         OrderEntity CreateOrder(Guid orderId, CreateOrderRequest createOrderRequest, List<OrderItemEntity> orderItems);
         List<OrderItemEntity> CreateOrderItems(Guid orderId, List<ProductRequest> productRequest, Dictionary<string, int> quantities);
+        OrderResponse CreateOrderResponse(OrderEntity order);
+        IEnumerable<OrderResponse> CreateOrderResponses(IEnumerable<OrderEntity> orders);
     }
 }

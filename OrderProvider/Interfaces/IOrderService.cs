@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using OrderProvider.Data.Entities;
 using OrderProvider.Models;
 using System;
 using System.Collections.Generic;
@@ -8,9 +9,10 @@ using System.Threading.Tasks;
 
 namespace OrderProvider.Interfaces
 {
-    public interface ICreateOrderService
+    public interface IOrderService
     {
-        Task<CreateOrderRequest> UnpackCreateOrderRequest(HttpRequest req);
+        Task<CreateOrderRequest> UnpackHttpRequest(HttpRequest req);
         Task<bool> CreateOrder(CreateOrderRequest createOrderRequest);
+        Task<IEnumerable<OrderResponse>> GetAllOrdersByUserId(string userId);
     }
 }

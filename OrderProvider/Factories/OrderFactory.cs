@@ -42,5 +42,29 @@ namespace OrderProvider.Factories
                 Quantity = quantities[productRequest.ProductId]
             }).ToList();
         }
+
+        public OrderResponse CreateOrderResponse(OrderEntity order)
+        {
+            return new OrderResponse
+            {
+                OrderId = order.OrderId,
+                DeliveryAddress = order.DeliveryAddress,
+                TotalAmount = order.TotalAmount,
+                OrderStatus = order.OrderStatus,
+                OrderDate = order.OrderDate,
+                Items = order.Items.Select(i => new OrderItemResponse
+                {
+                    ProductId = i.ProductId,
+                    ProductName = i.ProductName,
+                    UnitPrice = i.UnitPrice,
+                    Quantity = i.Quantity
+                }).ToList()
+            };
+        }
+
+        public IEnumerable<OrderResponse> CreateOrderResponses(IEnumerable<OrderEntity> orders)
+        {
+            return orders.Select(CreateOrderResponse).ToList();
+        }
     }
 }
