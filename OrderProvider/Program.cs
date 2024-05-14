@@ -16,7 +16,7 @@ var host = new HostBuilder()
         services.ConfigureFunctionsApplicationInsights();
         services.AddDbContext<DataContext>(x => x.UseSqlServer(Environment.GetEnvironmentVariable("SqlDatabase")));
         services.AddTransient<IOrderFactory, OrderFactory>();
-        services.AddTransient<ICreateOrderService, CreateOrderService>();
+        services.AddTransient<IOrderService, OrderService>();
         services.AddHttpClient<IProductClient, ProductClient>();
     })
     .Build();

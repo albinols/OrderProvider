@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using OrderProvider.Data.Contexts;
 using OrderProvider.Data.Entities;
 using OrderProvider.Factories;
+using OrderProvider.Helpers;
 using OrderProvider.Interfaces;
 using OrderProvider.Models;
 using System;
@@ -15,42 +17,53 @@ using System.Threading.Tasks;
 
 namespace OrderProvider.Services
 {
-    public class CreateOrderService : ICreateOrderService
+    public class OrderService : IOrderService
     {
         private readonly DataContext _context;
-        private readonly ILogger<CreateOrderService> _logger;
+        private readonly ILogger<OrderService> _logger;
         private readonly IOrderFactory _orderFactory;
         private readonly IProductClient _productClient;
 
-        public CreateOrderService(DataContext context, ILogger<CreateOrderService> logger, IOrderFactory orderFactory, IProductClient productClient)
+        public OrderService(DataContext context, ILogger<OrderService> logger, IOrderFactory orderFactory, IProductClient productClient)
         {
             _context = context;
             _logger = logger;
             _orderFactory = orderFactory;
             _productClient = productClient;
         }
-
-        public async Task<CreateOrderRequest> UnpackCreateOrderRequest(HttpRequest req)
+        public async Task<CreateOrderRequest> UnpackHttpRequest(HttpRequest req)
         {
-            try
+            var createOrderRequest = await HttpRequestHelper.UnpackHttpRequest<CreateOrderRequest>(req, _logger);
+
+            if (createOrderRequest == null)
             {
-                var body = await new StreamReader(req.Body).ReadToEndAsync();
-                if(!string.IsNullOrEmpty(body))
-                {
-                    var cpr = JsonConvert.DeserializeObject<CreateOrderRequest>(body);
-                    if(cpr != null)
-                    {
-                        return cpr;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"CreateOrderService.UnpackCreateOrderRequest() :: {ex.Message}");
+                _logger.LogWarning("CreateOrderService.UnpackCreateOrderRequest() :: Failed to unpack the request.");
             }
 
-            return null;    
+            return createOrderRequest; 
         }
+
+        //public async Task<CreateOrderRequest> UnpackCreateOrderRequest(HttpRequest req)
+        //{
+        //    try
+        //    {
+        //        var body = await new StreamReader(req.Body).ReadToEndAsync();
+        //        if (!string.IsNullOrEmpty(body))
+        //        {
+        //            var cpr = JsonConvert.DeserializeObject<CreateOrderRequest>(body);
+        //            if (cpr != null)
+        //            {
+        //                return cpr;
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError($"CreateOrderService.UnpackCreateOrderRequest() :: {ex.Message}");
+        //    }
+
+        //    return null;
+        //}
 
         public async Task<bool> CreateOrder(CreateOrderRequest createOrderRequest)
         {
@@ -91,6 +104,15 @@ namespace OrderProvider.Services
             }
 
             return false;
+        }
+        public async Task<IEnumerable<OrderResponse>> GetAllOrdersByUserId(string userId)
+        {
+            var orders = await _context.Orders
+                .Where(o => o.CustomerId == userId)
+                .Include(o => o.Items)
+                .ToListAsync();
+
+            return _orderFactory.CreateOrderResponses(orders);
         }
     }
 }

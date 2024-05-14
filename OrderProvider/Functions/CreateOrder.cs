@@ -12,9 +12,9 @@ namespace OrderProvider.Functions
     public class CreateOrder
     {
         private readonly ILogger<CreateOrder> _logger;
-        private readonly ICreateOrderService _createOrderService;
+        private readonly IOrderService _createOrderService;
 
-        public CreateOrder(ILogger<CreateOrder> logger, ICreateOrderService createOrderService)
+        public CreateOrder(ILogger<CreateOrder> logger, IOrderService createOrderService)
         {
             _logger = logger;
             _createOrderService = createOrderService;
@@ -25,7 +25,7 @@ namespace OrderProvider.Functions
         {
             try
             {
-                var cpr = await _createOrderService.UnpackCreateOrderRequest(req);
+                var cpr = await _createOrderService.UnpackHttpRequest(req);
 
                 if (cpr != null || !string.IsNullOrEmpty(cpr.CustomerId) || cpr.Items.Count != 0)
                 {
