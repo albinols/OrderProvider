@@ -12,7 +12,7 @@ namespace OrderProvider.Data.Entities
         [Key]
         public string OrderId { get; set; } = Guid.NewGuid().ToString();
         [Required]
-        public string CustomerId { get; set; } = null!;
+        public string UserId { get; set; } = null!;
         [Required]
         public string Address { get; set; } = null!;
         public string PostalCode { get; set; } = null!;

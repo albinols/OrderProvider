@@ -19,7 +19,6 @@ namespace OrderProvider.Helpers
                 return null;
             }
 
-            // Remove the "Bearer " prefix if present
             var token = authHeaderValues.First().Replace("Bearer ", "", StringComparison.OrdinalIgnoreCase).Trim();
             if (string.IsNullOrEmpty(token))
             {
@@ -30,26 +29,20 @@ namespace OrderProvider.Helpers
             return token;
         }
 
-        // Decode the token and extract the user ID from the `sub` claim
         public static string? ExtractUserIdFromToken(string token, ILogger logger)
         {
             try
             {
-                // Initialize a JWT handler to read and decode the token
                 var handler = new JwtSecurityTokenHandler();
 
-                // Read and decode the JWT
                 var jwtToken = handler.ReadJwtToken(token);
 
-                // Extract the `sub` (subject) claim, which usually represents the user ID
                 var userIdClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "sub");
 
-                // Return the user ID if found, otherwise return null
                 return userIdClaim?.Value;
             }
             catch (Exception ex)
             {
-                // Handle any exceptions that may occur during token decoding
                 logger.LogError($"Error decoding token: {ex.Message}");
                 return null;
             }

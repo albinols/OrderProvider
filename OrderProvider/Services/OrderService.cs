@@ -75,7 +75,7 @@ namespace OrderProvider.Services
             var products = new List<ProductRequest>();
             var quantities = new Dictionary<string, int>();
 
-            foreach (var productOrder in createOrderRequest.OrderItemRequests)
+            foreach (var productOrder in createOrderRequest.OrderItem)
             {
                 var product = await _productClient.GetProductById(productOrder.ProductId);
                 if (product != null)
@@ -103,7 +103,7 @@ namespace OrderProvider.Services
         public async Task<IEnumerable<OrderResponse>> GetAllOrdersByUserId(string userId)
         {
             var orders = await _context.Orders
-                .Where(o => o.CustomerId == userId)
+                .Where(o => o.UserId == userId)
                 .Include(o => o.OrderItems)
                 .ToListAsync();
 

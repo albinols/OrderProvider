@@ -19,7 +19,7 @@ namespace OrderProvider.Factories
             return new OrderEntity
             {
                 OrderId = orderId,
-                CustomerId = createOrderRequest.CustomerId,
+                UserId = createOrderRequest.UserId,
                 Address = createOrderRequest.Address,
                 PostalCode = createOrderRequest.PostalCode,
                 City = createOrderRequest.City,

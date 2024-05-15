@@ -12,7 +12,7 @@ using OrderProvider.Data.Contexts;
 namespace OrderProvider.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240514203914_intial_setup")]
+    [Migration("20240515181955_intial_setup")]
     partial class intial_setup
     {
         /// <inheritdoc />
@@ -38,10 +38,6 @@ namespace OrderProvider.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("CustomerId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<decimal>("DeliveryCost")
                         .HasColumnType("decimal(18,2)");
 
@@ -61,6 +57,10 @@ namespace OrderProvider.Migrations
 
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("OrderId");
 
@@ -100,7 +100,7 @@ namespace OrderProvider.Migrations
             modelBuilder.Entity("OrderProvider.Data.Entities.OrderItemEntity", b =>
                 {
                     b.HasOne("OrderProvider.Data.Entities.OrderEntity", "Order")
-                        .WithMany("Items")
+                        .WithMany("OrderItems")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -110,7 +110,7 @@ namespace OrderProvider.Migrations
 
             modelBuilder.Entity("OrderProvider.Data.Entities.OrderEntity", b =>
                 {
-                    b.Navigation("Items");
+                    b.Navigation("OrderItems");
                 });
 #pragma warning restore 612, 618
         }

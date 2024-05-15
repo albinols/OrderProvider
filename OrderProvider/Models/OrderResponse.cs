@@ -9,7 +9,7 @@ namespace OrderProvider.Models
     public class OrderResponse
     {
         public string OrderId { get; set; } = null!;
-        public string CustomerId { get; set; } = null!;
+        public string UserId { get; set; } = null!;
         public string Address { get; set; } = null!;
         public string PostalCode { get; set; } = null!;
         public string City { get; set; } = null!;

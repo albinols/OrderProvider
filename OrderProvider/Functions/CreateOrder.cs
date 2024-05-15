@@ -27,7 +27,7 @@ namespace OrderProvider.Functions
             {
                 var cpr = await _createOrderService.UnpackHttpRequest(req);
 
-                if (cpr != null || !string.IsNullOrEmpty(cpr.CustomerId) || cpr.OrderItemRequests.Count != 0)
+                if (cpr != null || !string.IsNullOrEmpty(cpr.UserId) || cpr.OrderItem.Count != 0)
                 {
                     var result = await _createOrderService.CreateOrder(cpr);
                     if (result)
