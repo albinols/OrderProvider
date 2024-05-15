@@ -109,5 +109,18 @@ namespace OrderProvider.Services
 
             return _orderFactory.CreateOrderResponses(orders);
         }
+
+        public async Task<OrderResponse> GetOrderByOrderId(string orderId)
+        {
+            var order = await _context.Orders
+                .Include(o => o.OrderItems)
+                .FirstOrDefaultAsync(o => o.OrderId == orderId);
+
+            if (order != null)
+            {
+                return _orderFactory.CreateOrderResponse(order);
+            }
+            return null;
+        }
     }
 }

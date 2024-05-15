@@ -14,5 +14,6 @@ namespace OrderProvider.Interfaces
         Task<CreateOrderRequest> UnpackHttpRequest(HttpRequest req);
         Task<bool> CreateOrder(CreateOrderRequest createOrderRequest);
         Task<IEnumerable<OrderResponse>> GetAllOrdersByUserId(string userId);
+        Task<OrderResponse> GetOrderByOrderId(string orderId);
     }
 }
