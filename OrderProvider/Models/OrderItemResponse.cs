@@ -8,6 +8,7 @@ namespace OrderProvider.Models
 {
     public class OrderItemResponse
     {
+        public string OrderItemId { get; set; } = null!;
         public string ProductId { get; set; } = null!;
         public string ProductName { get; set; } = null!;
         public decimal UnitPrice { get; set; }

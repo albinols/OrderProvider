@@ -11,9 +11,9 @@ namespace OrderProvider.Data.Entities
     public class OrderItemEntity
     {
         [Key]
-        public Guid OrderItemId { get; set; }
+        public string OrderItemId { get; set; } = Guid.NewGuid().ToString();
         [ForeignKey("OrderEntity")]
-        public Guid OrderId { get; set; }
+        public string OrderId { get; set; } = null!;
         [Required]
         public string ProductId { get; set; } = null!;
         [Required]
