@@ -22,7 +22,7 @@ namespace OrderProvider.Data.Contexts
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<OrderEntity>()
-                .HasMany(o => o.Items)
+                .HasMany(o => o.OrderItems)
                 .WithOne(i => i.Order)
                 .HasForeignKey(i => i.OrderId);
 

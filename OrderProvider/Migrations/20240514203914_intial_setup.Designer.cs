@@ -12,7 +12,7 @@ using OrderProvider.Data.Contexts;
 namespace OrderProvider.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240508193958_intial_setup")]
+    [Migration("20240514203914_intial_setup")]
     partial class intial_setup
     {
         /// <inheritdoc />
@@ -27,15 +27,18 @@ namespace OrderProvider.Migrations
 
             modelBuilder.Entity("OrderProvider.Data.Entities.OrderEntity", b =>
                 {
-                    b.Property<Guid>("OrderId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("OrderId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("CustomerId")
+                    b.Property<string>("Address")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("DeliveryAddress")
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CustomerId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -52,6 +55,10 @@ namespace OrderProvider.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("PostalCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(18,2)");
 
@@ -62,12 +69,12 @@ namespace OrderProvider.Migrations
 
             modelBuilder.Entity("OrderProvider.Data.Entities.OrderItemEntity", b =>
                 {
-                    b.Property<Guid>("OrderItemId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("OrderItemId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<Guid>("OrderId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("OrderId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProductId")
                         .IsRequired()

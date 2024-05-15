@@ -10,18 +10,20 @@ namespace OrderProvider.Data.Entities
     public class OrderEntity
     {
         [Key]
-        public Guid OrderId { get; set; }
+        public string OrderId { get; set; } = Guid.NewGuid().ToString();
         [Required]
         public string CustomerId { get; set; } = null!;
         [Required]
-        public string DeliveryAddress { get; set; } = null!;
+        public string Address { get; set; } = null!;
+        public string PostalCode { get; set; } = null!;
+        public string City { get; set; } = null!;
         public decimal DeliveryCost { get; set; } 
         public DateTime DeliveryDate { get; set; }
         public decimal TotalAmount { get; set; }
         [Required]
         public string OrderStatus { get; set; } = null!;
-        public DateTime OrderDate { get; set; } = DateTime.UtcNow;
+        public DateTime OrderDate { get; set; } = DateTime.UtcNow.Date;
 
-        public ICollection<OrderItemEntity> Items { get; set; } = new List<OrderItemEntity>();
+        public ICollection<OrderItemEntity> OrderItems { get; set; } = new List<OrderItemEntity>();
     }
 }

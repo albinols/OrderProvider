@@ -8,10 +8,12 @@ namespace OrderProvider.Models
 {
     public class CreateOrderRequest
     {
-        public string CustomerId { get; set; } = string.Empty;
-        public string DeliveryAddress { get; set; } = string.Empty;
+        public string CustomerId { get; set; } = null!;
+        public string Address { get; set; } = null!;
+        public string PostalCode { get; set; } = null!;
+        public string City { get; set; } = null!;
         public decimal DeliveryCost { get; set; }
         public DateTime DeliveryDate { get; set; }
-        public List<OrderItemRequest> Items { get; set; } = new List<OrderItemRequest>();
+        public List<OrderItemRequest> OrderItemRequests { get; set; } = new List<OrderItemRequest>();
     }
 }

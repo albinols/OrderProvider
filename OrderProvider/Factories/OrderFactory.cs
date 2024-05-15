@@ -11,7 +11,7 @@ namespace OrderProvider.Factories
 {
     public class OrderFactory : IOrderFactory
     {
-        public OrderEntity CreateOrder(Guid orderId, CreateOrderRequest createOrderRequest, List<OrderItemEntity> orderItems)
+        public OrderEntity CreateOrder(string orderId, CreateOrderRequest createOrderRequest, List<OrderItemEntity> orderItems)
         {
             decimal itemTotal = orderItems.Sum(item => item.UnitPrice * item.Quantity);
             decimal totalAmount = itemTotal + createOrderRequest.DeliveryCost;
@@ -20,21 +20,23 @@ namespace OrderProvider.Factories
             {
                 OrderId = orderId,
                 CustomerId = createOrderRequest.CustomerId,
-                DeliveryAddress = createOrderRequest.DeliveryAddress,
+                Address = createOrderRequest.Address,
+                PostalCode = createOrderRequest.PostalCode,
+                City = createOrderRequest.City,
                 DeliveryCost = createOrderRequest.DeliveryCost,
-                DeliveryDate = createOrderRequest.DeliveryDate,
+                DeliveryDate = createOrderRequest.DeliveryDate.Date,
                 TotalAmount = totalAmount,
                 OrderStatus = "Created",
-                OrderDate = DateTime.UtcNow,
-                Items = orderItems
+                OrderDate = DateTime.UtcNow.Date,
+                OrderItems = orderItems
             };
         }
 
-        public List<OrderItemEntity> CreateOrderItems(Guid orderId, List<ProductRequest> productRequest, Dictionary<string, int> quantities)
+        public List<OrderItemEntity> CreateOrderItems(string orderId, List<ProductRequest> productRequest, Dictionary<string, int> quantities)
         {
             return productRequest.Select(productRequest => new OrderItemEntity
             {
-                OrderItemId = Guid.NewGuid(),
+                OrderItemId = Guid.NewGuid().ToString(),
                 OrderId = orderId,
                 ProductId = productRequest.ProductId,
                 ProductName = productRequest.ProductName,
@@ -48,12 +50,17 @@ namespace OrderProvider.Factories
             return new OrderResponse
             {
                 OrderId = order.OrderId,
-                DeliveryAddress = order.DeliveryAddress,
+                Address = order.Address,
+                PostalCode = order.PostalCode,
+                City = order.City,
+                DeliveryCost = order.DeliveryCost,
+                DeliveryDate = order.DeliveryDate,
                 TotalAmount = order.TotalAmount,
                 OrderStatus = order.OrderStatus,
                 OrderDate = order.OrderDate,
-                Items = order.Items.Select(i => new OrderItemResponse
+                OrderItems = order.OrderItems.Select(i => new OrderItemResponse
                 {
+                    OrderItemId = i.OrderItemId,
                     ProductId = i.ProductId,
                     ProductName = i.ProductName,
                     UnitPrice = i.UnitPrice,
