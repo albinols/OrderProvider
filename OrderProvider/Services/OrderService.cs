@@ -122,5 +122,36 @@ namespace OrderProvider.Services
             }
             return null;
         }
+
+        public async Task<bool> DeleteOrderById(string orderId)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                var order = await _context.Orders
+                    .Include(o => o.OrderItems)
+                    .FirstOrDefaultAsync(o => o.OrderId == orderId);
+
+                if (order == null)
+                {
+                    return false;
+                }
+
+                _context.OrderItems.RemoveRange(order.OrderItems);
+
+                _context.Orders.Remove(order);
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"OrderService.DeleteOrderById() :: {ex.Message}");
+                await transaction.RollbackAsync();
+                return false;
+            }
+        }
     }
 }

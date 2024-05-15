@@ -15,5 +15,6 @@ namespace OrderProvider.Interfaces
         Task<bool> CreateOrder(CreateOrderRequest createOrderRequest);
         Task<IEnumerable<OrderResponse>> GetAllOrdersByUserId(string userId);
         Task<OrderResponse> GetOrderByOrderId(string orderId);
+        Task<bool> DeleteOrderById(string orderId);
     }
 }
