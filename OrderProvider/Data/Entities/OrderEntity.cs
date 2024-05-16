@@ -15,8 +15,6 @@ namespace OrderProvider.Data.Entities
         public string UserId { get; set; } = null!;
         [Required]
         public string Address { get; set; } = null!;
-        public string PostalCode { get; set; } = null!;
-        public string City { get; set; } = null!;
         public decimal DeliveryCost { get; set; } 
         public DateTime DeliveryDate { get; set; }
         public decimal TotalAmount { get; set; }

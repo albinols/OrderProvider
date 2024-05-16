@@ -12,8 +12,8 @@ using OrderProvider.Data.Contexts;
 namespace OrderProvider.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240515181955_intial_setup")]
-    partial class intial_setup
+    [Migration("20240516122612_changed address to one string")]
+    partial class changedaddresstoonestring
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,10 +34,6 @@ namespace OrderProvider.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<decimal>("DeliveryCost")
                         .HasColumnType("decimal(18,2)");
 
@@ -48,10 +44,6 @@ namespace OrderProvider.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("OrderStatus")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PostalCode")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
