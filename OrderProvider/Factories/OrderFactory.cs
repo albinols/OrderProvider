@@ -50,6 +50,7 @@ namespace OrderProvider.Factories
             return new OrderResponse
             {
                 OrderId = order.OrderId,
+                UserId = order.UserId,
                 Address = order.Address,
                 PostalCode = order.PostalCode,
                 City = order.City,
