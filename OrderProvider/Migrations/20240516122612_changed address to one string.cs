@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace OrderProvider.Migrations
 {
     /// <inheritdoc />
-    public partial class intial_setup : Migration
+    public partial class changedaddresstoonestring : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,8 +18,6 @@ namespace OrderProvider.Migrations
                     OrderId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PostalCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    City = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DeliveryCost = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     DeliveryDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
