@@ -16,6 +16,7 @@ namespace OrderProvider.Models
         public decimal TotalAmount { get; set; }
         public string OrderStatus { get; set; } = null!;
         public DateTime OrderDate { get; set; }
+        public string OrderNumber { get; set; } = null!;
         public List<OrderItemResponse> OrderItems { get; set; } = new List<OrderItemResponse>();
     }
 }

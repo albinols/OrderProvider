@@ -21,6 +21,8 @@ namespace OrderProvider.Data.Entities
         [Required]
         public string OrderStatus { get; set; } = null!;
         public DateTime OrderDate { get; set; } = DateTime.UtcNow.Date;
+        [Required]
+        public string OrderNumber { get; set; } = null!;
 
         public ICollection<OrderItemEntity> OrderItems { get; set; } = new List<OrderItemEntity>();
     }

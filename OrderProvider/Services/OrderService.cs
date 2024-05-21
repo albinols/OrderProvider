@@ -56,7 +56,9 @@ namespace OrderProvider.Services
                     return false;
                 }
 
-                var order = CreateOrderWithFactory(orderId, createOrderRequest, products, quantities);
+                var orderNumber = await GenerateSequentialOrderNumber();
+
+                var order = CreateOrderWithFactory(orderId, orderNumber, createOrderRequest, products, quantities);
 
                 _context.Orders.Add(order);
                 await _context.SaveChangesAsync();
@@ -68,6 +70,23 @@ namespace OrderProvider.Services
             }
 
             return false;
+        }
+
+        private async Task<int> GenerateSequentialOrderNumber() 
+        {
+            var tracker = await _context.OrderNumberTracker.FirstOrDefaultAsync();
+
+            if (tracker == null)
+            {
+                tracker = new OrderNumberTracker { LastOrderNumber = 99999 };
+                _context.OrderNumberTracker.Add(tracker);
+                await _context.SaveChangesAsync();
+            }
+
+            tracker.LastOrderNumber++;
+            await _context.SaveChangesAsync();
+
+            return tracker.LastOrderNumber;
         }
 
         private async Task<(List<ProductRequest> Products, Dictionary<string, int> Quantities, bool Success)> FetchProductsAndQuantities(CreateOrderRequest createOrderRequest)
@@ -93,10 +112,10 @@ namespace OrderProvider.Services
             return (products, quantities, true);
         }
 
-        private OrderEntity CreateOrderWithFactory(string orderId, CreateOrderRequest createOrderRequest, List<ProductRequest> products, Dictionary<string, int> quantities)
+        private OrderEntity CreateOrderWithFactory(string orderId, int orderNumber, CreateOrderRequest createOrderRequest, List<ProductRequest> products, Dictionary<string, int> quantities)
         {
             var orderItems = _orderFactory.CreateOrderItems(orderId, products, quantities);
-            var order = _orderFactory.CreateOrder(orderId, createOrderRequest, orderItems);
+            var order = _orderFactory.CreateOrder(orderId, orderNumber, createOrderRequest, orderItems);
             return order;
         }
 
