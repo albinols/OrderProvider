@@ -10,7 +10,7 @@ namespace OrderProvider.Interfaces
 {
     public interface IOrderFactory
     {
-        OrderEntity CreateOrder(string orderId, CreateOrderRequest createOrderRequest, List<OrderItemEntity> orderItems);
+        OrderEntity CreateOrder(string orderId, int orderNumber, CreateOrderRequest createOrderRequest, List<OrderItemEntity> orderItems);
         List<OrderItemEntity> CreateOrderItems(string orderId, List<ProductRequest> productRequest, Dictionary<string, int> quantities);
         OrderResponse CreateOrderResponse(OrderEntity order);
         IEnumerable<OrderResponse> CreateOrderResponses(IEnumerable<OrderEntity> orders);

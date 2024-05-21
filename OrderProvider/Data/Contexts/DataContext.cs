@@ -18,6 +18,7 @@ namespace OrderProvider.Data.Contexts
         public DbSet<OrderEntity> Orders { get; set; }
 
         public DbSet<OrderItemEntity> OrderItems { get; set; }
+        public DbSet<OrderNumberTracker> OrderNumberTracker { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

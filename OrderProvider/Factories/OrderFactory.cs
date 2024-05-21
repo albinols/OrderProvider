@@ -11,7 +11,7 @@ namespace OrderProvider.Factories
 {
     public class OrderFactory : IOrderFactory
     {
-        public OrderEntity CreateOrder(string orderId, CreateOrderRequest createOrderRequest, List<OrderItemEntity> orderItems)
+        public OrderEntity CreateOrder(string orderId, int orderNumber, CreateOrderRequest createOrderRequest, List<OrderItemEntity> orderItems)
         {
             decimal itemTotal = orderItems.Sum(item => item.UnitPrice * item.Quantity);
             decimal totalAmount = itemTotal + createOrderRequest.DeliveryCost;
@@ -26,6 +26,7 @@ namespace OrderProvider.Factories
                 TotalAmount = totalAmount,
                 OrderStatus = "Created",
                 OrderDate = DateTime.UtcNow.Date,
+                OrderNumber = orderNumber.ToString(),
                 OrderItems = orderItems
             };
         }
@@ -55,6 +56,7 @@ namespace OrderProvider.Factories
                 TotalAmount = order.TotalAmount,
                 OrderStatus = order.OrderStatus,
                 OrderDate = order.OrderDate,
+                OrderNumber = order.OrderNumber,
                 OrderItems = order.OrderItems.Select(i => new OrderItemResponse
                 {
                     OrderItemId = i.OrderItemId,
