@@ -23,6 +23,8 @@ namespace OrderProvider.Data.Entities
         public DateTime OrderDate { get; set; } = DateTime.UtcNow.Date;
         [Required]
         public string OrderNumber { get; set; } = null!;
+        public string MaskedCardNumber { get; set; } = null!;
+        public string PaymentId { get; set; } = null!;
 
         public ICollection<OrderItemEntity> OrderItems { get; set; } = new List<OrderItemEntity>();
     }

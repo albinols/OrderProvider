@@ -31,19 +31,30 @@ namespace OrderProvider.Services
             _orderFactory = orderFactory;
             _productClient = productClient;
         }
-        public async Task<CreateOrderRequest> UnpackHttpRequest(HttpRequest req)
+        public async Task<CreateOrderRequest> UnpackCreateOrderRequest(HttpRequest req)
         {
             var createOrderRequest = await HttpRequestHelper.UnpackHttpRequest<CreateOrderRequest>(req, _logger);
 
             if (createOrderRequest == null)
             {
-                _logger.LogWarning("CreateOrderService.UnpackCreateOrderRequest() :: Failed to unpack the request.");
+                _logger.LogWarning("OrderService.UnpackCreateOrderRequest() :: Failed to unpack the request.");
             }
 
             return createOrderRequest; 
         }
+        public async Task<UpdateOrderRequest> UnpackUpdateOrderRequest(HttpRequest req)
+        {
+            var updateOrderRequest = await HttpRequestHelper.UnpackHttpRequest<UpdateOrderRequest>(req, _logger);
 
-        public async Task<bool> CreateOrder(CreateOrderRequest createOrderRequest)
+            if (updateOrderRequest == null)
+            {
+                _logger.LogWarning("OrderService.UnpackUpdateOrderRequest() :: Failed to unpack the request.");
+            }
+
+            return updateOrderRequest;
+        }
+
+        public async Task<OrderResponse> CreateOrder(CreateOrderRequest createOrderRequest)
         {
             try
             {
@@ -53,7 +64,7 @@ namespace OrderProvider.Services
 
                 if (!success)
                 {
-                    return false;
+                    return null;
                 }
 
                 var orderNumber = await GenerateSequentialOrderNumber();
@@ -62,14 +73,14 @@ namespace OrderProvider.Services
 
                 _context.Orders.Add(order);
                 await _context.SaveChangesAsync();
-                return true;
+                return _orderFactory.CreateOrderResponse(order);
             }
             catch (Exception ex)
             {
                 _logger.LogError($"CreateOrderService.CreateOrder() :: {ex.Message}");
             }
 
-            return false;
+            return null;
         }
 
         private async Task<int> GenerateSequentialOrderNumber() 
@@ -169,6 +180,89 @@ namespace OrderProvider.Services
             {
                 _logger.LogError($"OrderService.DeleteOrderById() :: {ex.Message}");
                 await transaction.RollbackAsync();
+                return false;
+            }
+        }
+
+        public async Task<bool> UpdateOrder(UpdateOrderRequest updateOrderRequest)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                var order = await _context.Orders
+                    .Include(o => o.OrderItems)
+                    .FirstOrDefaultAsync(o => o.OrderId == updateOrderRequest.OrderId);
+
+                if (order == null)
+                {
+                    _logger.LogWarning($"Order with ID: {updateOrderRequest.OrderId} not found.");
+                    return false;
+                }
+
+                order.Address = updateOrderRequest.Address;
+
+                var itemsToRemove = new List<OrderItemEntity>();
+
+                foreach (var item in updateOrderRequest.OrderItems)
+                {
+                    var existingItem = order.OrderItems.FirstOrDefault(i => i.ProductId == item.ProductId);
+
+                    if (existingItem != null)
+                    {
+                        if (item.Quantity == 0)
+                        {
+                            itemsToRemove.Add(existingItem);
+                        }
+                        else
+                        {
+                            existingItem.Quantity = item.Quantity;
+                        }
+                    }
+                    else
+                    {
+                        var product = await _productClient.GetProductById(item.ProductId);
+                        if (product != null)
+                        {
+                            var newItem = new OrderItemEntity
+                            {
+                                OrderItemId = Guid.NewGuid().ToString(),
+                                OrderId = order.OrderId,
+                                ProductId = product.ProductId,
+                                ProductName = product.ProductName,
+                                UnitPrice = product.UnitPrice,
+                                Quantity = item.Quantity
+                            };
+                            order.OrderItems.Add(newItem);
+                        }
+                        else
+                        {
+                            _logger.LogWarning($"Product with ID: {item.ProductId} not found.");
+                            throw new Exception($"Product with ID: {item.ProductId} not found.");
+                        }
+                    }
+                }
+
+                foreach (var item in itemsToRemove)
+                {
+                    order.OrderItems.Remove(item);
+                    _context.OrderItems.Remove(item);
+                }
+
+                decimal itemTotal = order.OrderItems.Sum(item => item.UnitPrice * item.Quantity);
+                order.TotalAmount = itemTotal + order.DeliveryCost;
+
+                order.OrderStatus = "Updated";
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                _logger.LogError($"OrderService.UpdateOrder() :: {ex.Message}");
                 return false;
             }
         }
