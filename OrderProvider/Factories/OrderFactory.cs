@@ -27,6 +27,8 @@ namespace OrderProvider.Factories
                 OrderStatus = "Created",
                 OrderDate = DateTime.UtcNow.Date,
                 OrderNumber = orderNumber.ToString(),
+                MaskedCardNumber = createOrderRequest.MaskedCardNumber,
+                PaymentId = createOrderRequest.PaymentId,
                 OrderItems = orderItems
             };
         }
@@ -57,6 +59,8 @@ namespace OrderProvider.Factories
                 OrderStatus = order.OrderStatus,
                 OrderDate = order.OrderDate,
                 OrderNumber = order.OrderNumber,
+                MaskedCardNumber = order.MaskedCardNumber,
+                PaymentId = order.PaymentId,
                 OrderItems = order.OrderItems.Select(i => new OrderItemResponse
                 {
                     OrderItemId = i.OrderItemId,

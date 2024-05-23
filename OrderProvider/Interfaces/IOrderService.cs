@@ -11,10 +11,12 @@ namespace OrderProvider.Interfaces
 {
     public interface IOrderService
     {
-        Task<CreateOrderRequest> UnpackHttpRequest(HttpRequest req);
-        Task<bool> CreateOrder(CreateOrderRequest createOrderRequest);
+        Task<CreateOrderRequest> UnpackCreateOrderRequest(HttpRequest req);
+        Task<UpdateOrderRequest> UnpackUpdateOrderRequest(HttpRequest req);
+        Task<OrderResponse> CreateOrder(CreateOrderRequest createOrderRequest);
         Task<IEnumerable<OrderResponse>> GetAllOrdersByUserId(string userId);
         Task<OrderResponse> GetOrderByOrderId(string orderId);
         Task<bool> DeleteOrderById(string orderId);
+        Task<bool> UpdateOrder(UpdateOrderRequest updateOrderRequest);
     }
 }

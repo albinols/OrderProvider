@@ -12,12 +12,12 @@ namespace OrderProvider.Functions
     public class CreateOrder
     {
         private readonly ILogger<CreateOrder> _logger;
-        private readonly IOrderService _createOrderService;
+        private readonly IOrderService _orderService;
 
-        public CreateOrder(ILogger<CreateOrder> logger, IOrderService createOrderService)
+        public CreateOrder(ILogger<CreateOrder> logger, IOrderService orderService)
         {
             _logger = logger;
-            _createOrderService = createOrderService;
+            _orderService = orderService;
         }
 
         [Function("CreateOrder")]
@@ -25,14 +25,14 @@ namespace OrderProvider.Functions
         {
             try
             {
-                var cpr = await _createOrderService.UnpackHttpRequest(req);
+                var cpr = await _orderService.UnpackCreateOrderRequest(req);
 
                 if (cpr != null || !string.IsNullOrEmpty(cpr.UserId) || cpr.OrderItem.Count != 0)
                 {
-                    var result = await _createOrderService.CreateOrder(cpr);
-                    if (result)
+                    var result = await _orderService.CreateOrder(cpr);
+                    if (result != null)
                     {
-                        return new CreatedResult();
+                        return new CreatedResult("Order created", result);
                     }
                 }
             }
