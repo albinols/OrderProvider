@@ -15,7 +15,7 @@ namespace OrderProvider.Services
     {
         private readonly HttpClient _httpClient;
         private readonly ILogger<ProductClient> _logger;
-        private const string ProductBaseUrl = "https://maneroproductprovider.azurewebsites.net/api/products/";
+        private const string ProductBaseUrl = "key to product on azure";
         private const string AccessCode = "PizzaKey";
         public ProductClient(HttpClient httpClient, ILogger<ProductClient> logger)
         {
